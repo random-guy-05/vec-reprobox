@@ -13,6 +13,13 @@ from veckit import score
 
 def main() -> int:
     print("VEC ReproBox smoke test")
+    freeze = Path("/opt/vec-reprobox/pip-freeze.txt")
+    if not freeze.is_file():
+        raise RuntimeError("missing resolved environment snapshot")
+    freeze_text = freeze.read_text(encoding="utf-8")
+    if "veckit==0.1.2" not in freeze_text:
+        raise RuntimeError("resolved environment does not contain veckit==0.1.2")
+    print("resolved environment snapshot PASS")
     print("veckit", importlib.metadata.version("veckit"))
     print("anndata", importlib.metadata.version("anndata"))
 
