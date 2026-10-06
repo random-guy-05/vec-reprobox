@@ -1,8 +1,8 @@
 # VEC ReproBox
 
-**A reproducible VEC environment you can start before debugging Python packaging.**
+**A tested VEC container environment you can start before debugging Python packaging.**
 
-ReproBox packages the public local scorer and the standard scientific Python stack into a Docker image and VS Code devcontainer. The scorer is pinned to **`veckit==0.1.2`**, the current PyPI release in the 2026-10-01 source snapshot.
+ReproBox packages the public local scorer and the standard scientific Python stack into a Docker image and VS Code devcontainer. The scorer is pinned to **`veckit==0.1.2`**, the current PyPI release in the 2026-10-05 source snapshot. The Python base image is also pinned by digest, and every build records its exact resolved Python packages inside the image.
 
 ## Fastest path
 
@@ -39,13 +39,15 @@ Open the repository in a client supporting the Dev Containers specification and 
 - synthetic end-to-end scorer smoke test;
 - Docker Compose and devcontainer entry points.
 
-## Why top-level dependencies are bounded instead of freezing every wheel
+## Reproducibility policy
 
-The scorer version is part of the evaluation contract and is pinned exactly. Scientific dependencies are bounded below known-compatible versions and below their next major API break. That allows security/bug-fix releases across platforms while preventing an accidental NumPy/AnnData major-version jump. The CI image build is the executable compatibility check.
+The scorer version and Python base image are pinned exactly. Scientific Python packages are bounded rather than frozen in the repository so compatible bug/security releases remain possible across architectures. Each built image writes the exact resolved environment to `/opt/vec-reprobox/pip-freeze.txt`, and the CI image build plus real scorer smoke test is the compatibility check. Rebuilding from a later date can therefore resolve newer packages inside those bounds; use the recorded freeze file when exact package provenance matters.
 
 To record the exact resolved environment of a built image:
 
 ```bash
+docker run --rm vec-reprobox:local cat /opt/vec-reprobox/pip-freeze.txt
+# or a shorter summary:
 docker run --rm vec-reprobox:local python scripts/versions.py
 ```
 
