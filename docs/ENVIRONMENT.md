@@ -2,7 +2,7 @@
 
 ## Reproducibility policy
 
-`veckit==0.1.2` is pinned exactly because scorer behavior is part of the evaluation contract. The surrounding scientific stack is bounded by major version rather than frozen to one Linux wheel set, so the image can resolve appropriate compatible builds on x86_64 and arm64 while avoiding unreviewed major API jumps.
+`veckit==0.1.2` is pinned exactly because scorer behavior is part of the evaluation contract. The Python base image is pinned by digest. The surrounding scientific stack is bounded rather than frozen to one wheel set so compatible builds can resolve on x86_64 and arm64 while avoiding unreviewed major API jumps. Every image stores the exact resolved `pip freeze` at `/opt/vec-reprobox/pip-freeze.txt`.
 
 The release gate is executable: GitHub Actions builds the image and runs the scorer smoke test inside it.
 
@@ -36,7 +36,7 @@ The default `jupyter lab` command keeps Jupyter's normal token authentication. R
 ## Record the resolved environment
 
 ```bash
-docker run --rm vec-reprobox:local python scripts/versions.py > resolved-versions.txt
+docker run --rm vec-reprobox:local cat /opt/vec-reprobox/pip-freeze.txt > resolved-versions.txt
 ```
 
 Store this beside a final experiment if exact package provenance matters.
