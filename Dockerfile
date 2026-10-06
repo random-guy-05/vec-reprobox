@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bookworm
+FROM python:3.11-slim-bookworm@sha256:2333bd330d12de02514770b3585cad313644316047cdee24a7acfdece6de6efb
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -13,7 +13,9 @@ WORKDIR /workspace
 
 COPY requirements.txt /tmp/requirements.txt
 RUN python -m pip install --upgrade pip \
-    && python -m pip install -r /tmp/requirements.txt
+    && python -m pip install -r /tmp/requirements.txt \
+    && mkdir -p /opt/vec-reprobox \
+    && python -m pip freeze > /opt/vec-reprobox/pip-freeze.txt
 
 COPY --chown=vec:vec . /workspace
 USER vec
