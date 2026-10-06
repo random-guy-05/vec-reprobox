@@ -25,4 +25,5 @@ def test_dockerfile_runs_as_nonroot_user():
     root = Path(__file__).resolve().parents[1]
     dockerfile = (root / "Dockerfile").read_text()
     assert "USER vec" in dockerfile
-    assert "FROM python:3.11-slim-bookworm" in dockerfile
+    assert "FROM python:3.11-slim-bookworm@sha256:" in dockerfile
+    assert "/opt/vec-reprobox/pip-freeze.txt" in dockerfile
